@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +27,7 @@ public class UserController {
     public ResponseEntity<User> fetchUserById(@PathVariable(name = "id") Long userId)
     {
         Optional<User> findUser = userRepository.findById(userId);
-        if(findUser.isPresent())
-        {
-            return ResponseEntity.ok(findUser.get());
-        }
-        else {
-            return ResponseEntity.notFound().build();
-        }
+        return findUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping(value = {"/users"}, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -47,7 +40,7 @@ public class UserController {
     {
         Optional<User> existingUser = userRepository.findById(userId);
 
-        if (!existingUser.isPresent()) {
+        if (existingUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         else {

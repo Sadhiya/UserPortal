@@ -1,7 +1,5 @@
 package com.digicert.entity;
 
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
